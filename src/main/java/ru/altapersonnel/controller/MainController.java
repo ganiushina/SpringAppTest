@@ -1,33 +1,41 @@
 package ru.altapersonnel.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.altapersonnel.domain.Message;
+import ru.altapersonnel.domain.User;
 import ru.altapersonnel.repos.MessageRepo;
 
 import java.util.Map;
 
 @Controller
 public class MainController {
-
     @Autowired
     private MessageRepo messageRepo;
 
     @GetMapping("/")
-    public String greeting( Map<String, Object> model) {
+    public String greeting(Map<String, Object> model) {
         return "greeting";
     }
 
     @GetMapping("/main")
-    public String main(Map<String, Object> model){
+    public String main(Map<String, Object> model) {
         Iterable<Message> messages = messageRepo.findAll();
+
         model.put("messages", messages);
+
         return "main";
     }
-    @PostMapping("/main ")
-    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
-        Message message = new Message(text, tag);
+
+    @PostMapping("/main")
+    public String add(
+            @AuthenticationPrincipal User user,
+            @RequestParam String text,
+            @RequestParam String tag, Map<String, Object> model
+    ) {
+        Message message = new Message(text, tag, user);
 
         messageRepo.save(message);
 
@@ -52,15 +60,5 @@ public class MainController {
 
         return "main";
     }
-
-//    @PostMapping
-//    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model){
-//        Message message = new Message(text, tag);
-//        messageRepo.save(message);
-//        Iterable<Message> messages = messageRepo.findAll();
-//        model.put("messages", messages);
-//        return "main";
-//
-//    }
-
 }
+
