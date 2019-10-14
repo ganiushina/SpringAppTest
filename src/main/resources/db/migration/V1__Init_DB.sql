@@ -1,7 +1,7 @@
 -- create sequence hibernate_sequence start 1 increment 1;
 
 create table usr (
-    id bigint not null,
+    id bigint IDENTITY not null,
     activation_code varchar(255),
     active bit not null,
     email varchar(255),
@@ -10,7 +10,7 @@ create table usr (
     primary key (id)
 );
 create table message (
-    id bigint not null,
+    id bigint IDENTITY not null,
     filename varchar(255),
     tag varchar(255),
     text varchar(2000) not null,
